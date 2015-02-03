@@ -218,7 +218,9 @@
 	 * @static
 	 */
 	s.isImageTag = function(item) {
-		return item instanceof HTMLImageElement;
+		if (!item) { return false; }
+		var match = item.constructor.toString().match(/HTMLImageElement/ig);
+		return match && match.length > 0;
 	};
 
 	/**

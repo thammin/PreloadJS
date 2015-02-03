@@ -176,16 +176,17 @@ this.createjs = this.createjs || {};
 			return;
 		}
 
-		//Events
-		this._request.addEventListener("loadstart", this._handleLoadStartProxy, false);
-		this._request.addEventListener("progress", this._handleProgressProxy, false);
-		this._request.addEventListener("abort", this._handleAbortProxy, false);
-		this._request.addEventListener("error",this._handleErrorProxy, false);
-		this._request.addEventListener("timeout", this._handleTimeoutProxy, false);
+		//Events (using callbacks for IE8 support)
+		// Switch to use addEventListener / removeEventListener when we drop IE8 support.
+		this._request.onloadstart = this._handleLoadStartProxy;
+		this._request.onprogress = this._handleProgressProxy;
+		this._request.onabort = this._handleAbortProxy;
+		this._request.onerror = this._handleErrorProxy;
+		this._request.ontimeout = this._handleTimeoutProxy;
 
 		// Note: We don't get onload in all browsers (earlier FF and IE). onReadyStateChange handles these.
-		this._request.addEventListener("load", this._handleLoadProxy, false);
-		this._request.addEventListener("readystatechange", this._handleReadyStateChangeProxy, false);
+		this._request.onload = this._handleLoadProxy;
+		this._request.onreadystatechange = this._handleReadyStateChangeProxy;
 
 		// Set up a timeout if we don't have XHR2
 		if (this._xhrLevel == 1) {
@@ -499,13 +500,14 @@ this.createjs = this.createjs || {};
 	p._clean = function () {
 		clearTimeout(this._loadTimeout);
 
-		this._request.removeEventListener("loadstart", this._handleLoadStartProxy);
-		this._request.removeEventListener("progress", this._handleProgressProxy);
-		this._request.removeEventListener("abort", this._handleAbortProxy);
-		this._request.removeEventListener("error",this._handleErrorProxy);
-		this._request.removeEventListener("timeout", this._handleTimeoutProxy);
-		this._request.removeEventListener("load", this._handleLoadProxy);
-		this._request.removeEventListener("readystatechange", this._handleReadyStateChangeProxy);
+		this._request.onloadstart = null;
+		this._request.onprogress = null;
+		this._request.onabort = null;
+		this._request.onerror = null;
+		this._request.ontimeout = null;
+
+		this._request.onload = null;
+		this._request.onreadystatechange = null;
 	};
 
 	p.toString = function () {

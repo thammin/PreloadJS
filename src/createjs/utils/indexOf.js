@@ -58,3 +58,7 @@ createjs.indexOf = function (array, searchElement){
 	}
 	return -1;
 };
+
+if (!Array.prototype.indexOf) {
+	Array.prototype.indexOf = createjs.indexOf;
+}
