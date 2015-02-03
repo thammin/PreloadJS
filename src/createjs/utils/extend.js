@@ -57,7 +57,7 @@ this.createjs = this.createjs||{};
  */
 createjs.extend = function(subclass, superclass) {
 	"use strict";
-
+	if (!Object.getPrototypeOf) { subclass._super = superclass.prototype; }
 	function o() { this.constructor = subclass; }
 	o.prototype = superclass.prototype;
 	return (subclass.prototype = new o());
