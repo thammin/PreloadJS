@@ -380,6 +380,13 @@ this.createjs = this.createjs || {};
 		switch (status) {
 			case 404:   // Not Found
 			case 0:     // Not Loaded
+				// Android 2.3 could not load from the cached and return 0
+				// http://www.w3.org/TR/XMLHttpRequest/#states
+				// TODO: implement a cache checker? or more tests on xhr level 1?
+				var androidVersion = window.navigator.userAgent.match(/Android\s+(\d)(\.)(\d)/);
+				if ((status === 0) && androidVersion && (androidVersion.length > 3) && (androidVersion[1] === '2') && (androidVersion[3] === '3')) {
+  				break;
+				}
 				return new Error(status);
 		}
 		return null;
@@ -499,7 +506,11 @@ this.createjs = this.createjs || {};
 		}
 
 		for (n in headers) {
-			req.setRequestHeader(n, headers[n])
+  		try {
+				req.setRequestHeader(n, headers[n]);
+			} catch (e) {
+  			// catch the error caused by `refused to set unsafe header`
+			}
 		}
 
 		if (req instanceof XMLHttpRequest && item.withCredentials !== undefined) {
