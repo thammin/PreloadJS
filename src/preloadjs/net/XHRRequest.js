@@ -220,7 +220,7 @@ this.createjs = this.createjs || {};
 	p.setResponseType = function (type) {
 		// Some old browsers doesn't support blob, so we convert arraybuffer to blob after response is downloaded
 		if (type === 'blob') {
-			type = window.URL ? 'blob' : 'arraybuffer';
+			type = (window.URL || window.webkitURL) ? 'blob' : 'arraybuffer';
 			this._responseType = type;
 		}
 		this._request.responseType = type;
